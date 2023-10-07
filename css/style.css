@@ -9,6 +9,7 @@
 :root {
     --MAIN-COLOR: #da5858;
     --MAIN-BORDER: 3px solid #ff9797;
+    --LIGHT-GRAY: #c6c6c6;
 }
 
 body {
@@ -51,7 +52,7 @@ header h1 {
     padding: 20px 30px;
     width: 250px;
     background-color: rgb(230, 230, 230);
-    border-right: 1px solid #c6c6c6;
+    border-right: 1px solid var(--LIGHT-GRAY);
     overflow-y: auto; 
 }
 
@@ -67,7 +68,7 @@ header h1 {
 .sidebar ul button {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 
     width: 100%;
     padding: 7px 10px;
@@ -80,8 +81,29 @@ header h1 {
     cursor: pointer;
 }
 
+.sidebar ul button .li-title {
+    text-align: left;
+    flex: 1 0 auto;
+}
+
 .sidebar ul button:hover {
-    background-color: #c6c6c6;
+    background-color: var(--LIGHT-GRAY);
+}
+
+.sidebar ul button.active {
+    background-color: var(--LIGHT-GRAY);
+}
+
+.projects-list img.delete-project {
+    display: none;
+}
+
+.sidebar ul button:hover img.delete-project {
+    display: block;
+}
+
+.projects-list img.delete-project:hover {
+    filter: invert(27%) sepia(82%) saturate(4113%) hue-rotate(346deg) brightness(104%) contrast(100%);
 }
 
 .sidebar h2 {
