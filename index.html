@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/todo_style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
 </head>
 <body>
     <header>
@@ -13,38 +13,10 @@
     </header>
 
     <nav class="sidebar">
-        <ul class="primary-list">
-            <li><button>
-                <img src="assets/inbox_icon.svg">
-                <span class="li-title">Inbox</span>
-            </button></li>
-            <li><button>
-                <img src="assets/today_calendar_icon.svg">
-                <span class="li-title">Today</span>
-            </button></li>
-            <li><button>
-                <img src="assets/week_calendar_icon.svg">
-                <span class="li-title">Week</span>
-            </button></li>
-        </ul>
+        <ul class="default-list"></ul>
         <h2>Projects</h2>
-        <ul class="projects-list">
-            <li><button class="active">
-                <img src="assets/bookmark_icon.svg">
-                <span class="li-title">Project 1</span>
-                <img class="delete-project" src="assets/trash_icon.svg">
-            </button></li>
-            <li><button>
-                <img src="assets/bookmark_icon.svg">
-                <span class="li-title">Project 2</span>
-                <img class="delete-project" src="assets/trash_icon.svg">
-            </button></li>
-            <li><button>
-                <img src="assets/bookmark_icon.svg">
-                <span class="li-title">Project 3</span>
-                <img class="delete-project" src="assets/trash_icon.svg">
-            </button></li>
-            <li><button class="add-project-btn">
+        <ul class="personal-list">
+            <li><button id="add-project-btn">
                 <img src="assets/add_icon.svg">
                 <span class="li-title">Add Project</span>
             </button></li>
@@ -54,13 +26,13 @@
     <main>
         <div class="todo-item todo-urgency-high todo-done">
             <input class="todo-checkbox" type="checkbox">
-            <p class="todo-title">Hello</p>
+            <h3 class="todo-title">Hello</h3>
             <button class="todo-details">Details</button>
             <p class="todo-date">12 Dec</p>
             <button class="todo-edit"><img src="assets/edit_icon.svg"></button>
             <button class="todo-delete"><img src="assets/trash_icon.svg"></button>
         </div>
-        <button class="add-todo-btn"><img src="assets/add_icon.svg"></button>
+        <button id="add-todo-btn"><img src="assets/add_icon.svg"></button>
     </main>
 
     <footer>
