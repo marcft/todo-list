@@ -1,10 +1,10 @@
 export class Project {
-    static position = 0;
+    static index = 0;
 
     constructor(name, ...initialTodos) {
         this._name = name;
         this._todoList = [...initialTodos];
-        this._id = `proj${Project.position++}-${this.name}`;
+        this._id = `proj${Project.index++}`;
     }
 
     get name() {
@@ -19,15 +19,16 @@ export class Project {
         return this._id;
     }
 
-    getTodoByIndex(index) {
-        return this._todoList[index];
+    getTodoById(id) {
+        return this._todoList.find(todo => todo.id === id);
     }
 
     add(item) {
         this._todoList.push(item);
     }
 
-    remove(index) {
+    removeTodoById(id) {
+        const index = this._todoList.findIndex(todo => todo.id === id);
         this._todoList.splice(index, 1);
     }
 }

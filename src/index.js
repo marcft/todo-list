@@ -12,6 +12,7 @@ const myProjectsList = new ProjectsList(
 initializeState(myProjectsList);
 
 function initializeState(projectList) {
+    //Display default projects
     const inboxProjectButton =
         projectsDOM.displayDefaultProject(projectList.inboxProject, 'assets/inbox_icon.svg');
     const dayProjectButton =
@@ -19,12 +20,17 @@ function initializeState(projectList) {
     const weekProjectButton =
         projectsDOM.displayDefaultProject(projectList.weekProject, 'assets/week_calendar_icon.svg');
 
+    //Initialize active project
     const initialActiveProject = document.getElementById(projectList.activeProject.id);
     projectsDOM.setActiveClassTo(initialActiveProject);
+    const todosList = todoDOM.renderProjectTodos(myProjectsList.activeProject);
+    todosList.forEach(todo => setTodoElementListeners(todo));
 
+    //Set listeners to default projects, just the ActiveProjectListener
     const defaultProjects = [inboxProjectButton, dayProjectButton, weekProjectButton];
     defaultProjects.forEach( project => setActiveProjectListener(project) );
 
+    //Display personal projects and set listeners
     const personalProjects = projectList.personalProjectsList;
     personalProjects.forEach( project => { setPersonalProject(project); } );
 }
@@ -40,7 +46,8 @@ function setActiveProjectListener(projectButton) {
     projectButton.addEventListener('click', () => {
         myProjectsList.activeProject = myProjectsList.getProjectById(projectButton.id);
         projectsDOM.setActiveClassTo(projectButton);
-        todoDOM.renderProjectTodos(myProjectsList.activeProject);
+        const todosList = todoDOM.renderProjectTodos(myProjectsList.activeProject);
+        todosList.forEach(todo => setTodoElementListeners(todo));
     });
 }
 
@@ -82,6 +89,31 @@ let testCounter = 0;
 addButton.todo.addEventListener('click', () => {
     const newTodo = new TodoItem(`New Todo${testCounter++}`, URGENCY_TYPE.LOW);
     myProjectsList.activeProject.add(newTodo);
-    todoDOM.renderProjectTodos(myProjectsList.activeProject);
+    const todoElement = todoDOM.renderSingleTodo(newTodo);
+    setTodoElementListeners(todoElement);
 });
 
+function setTodoElementListeners(todoElement) {
+    const todoCheckbox = todoElement.querySelector('.todo-checkbox');
+    todoCheckbox.addEventListener('change', () => {
+        const todoItem = myProjectsList.activeProject.getTodoById(todoElement.id);   
+        todoItem.toggleIsDone();
+        todoDOM.toggleTodoDone(todoElement);
+    });
+
+    const todoDetailsButton = todoElement.querySelector('.todo-details');
+    todoDetailsButton.addEventListener('click', () => {
+        todoDOM.renderTodoDetails(myProjectsList.activeProject.getTodoById(todoElement.id));
+    });
+
+    const todoEditButton = todoElement.querySelector('.todo-edit');
+    todoEditButton.addEventListener('click', () => {
+        console.log('Edit button pressed');
+    });
+
+    const todoDeleteButton = todoElement.querySelector('.todo-delete');
+    todoDeleteButton.addEventListener('click', () => {
+        myProjectsList.activeProject.removeTodoById(todoElement.id);
+        todoElement.remove();
+    });
+}

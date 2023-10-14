@@ -38,6 +38,7 @@
     text-transform: uppercase;
     font-size: 0.85rem;
     font-weight: 500;
+    cursor: pointer;
 }
 
 .todo-details:hover {
@@ -56,6 +57,11 @@
     border: none;
     background-color: transparent;
     cursor: pointer;
+}
+
+.todo-edit img:hover,
+.todo-delete img:hover {
+    filter: invert(46%) sepia(94%) saturate(269%) hue-rotate(122deg) brightness(99%) contrast(88%);
 }
 
 /* --TODO-ITEM-DONE */

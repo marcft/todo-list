@@ -1,4 +1,6 @@
 export class TodoItem {
+    static index = 0;
+
     constructor(name, urgency, isDone = false, details = "",
     dueDate = new Date().toLocaleDateString()) {
         this._name = name;
@@ -6,6 +8,7 @@ export class TodoItem {
         this._isDone = isDone;
         this._details = details;
         this._dueDate = dueDate;
+        this._id = `todo${TodoItem.index++}`;
     }
 
     get name() {
@@ -26,5 +29,13 @@ export class TodoItem {
 
     get dueDate() { 
         return this._dueDate;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    toggleIsDone() {
+        this._isDone = !this._isDone;
     }
 }
