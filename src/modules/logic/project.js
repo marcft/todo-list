@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { format, addDays, startOfWeek } from 'date-fns';
+import { format, parse, addDays, startOfWeek } from 'date-fns';
 
 export class Project {
     constructor(name, ...initialTodos) {
@@ -26,6 +26,15 @@ export class Project {
 
     add(item) {
         this._todoList.push(item);
+        this.sortTodoListByDate();
+    }
+
+    sortTodoListByDate() {
+        this._todoList.sort((a, b) => {
+            const dateA = parse(a.dueDate, 'do MMM', new Date());
+            const dateB = parse(b.dueDate, 'do MMM', new Date());
+            return dateA - dateB;
+        });
     }
 
     removeTodoById(id) {
@@ -41,6 +50,7 @@ export class DefaultProject extends Project {
 
     setTodoList(todoList) {
         this._todoList = todoList;
+        this.sortTodoListByDate();
     }
 
     add(item) {
@@ -145,31 +155,3 @@ export class ProjectsList {
         this._personalProjectsList.splice(index, 1);
     }
 }
-
-
-
-/* 
-//Inbox is a special project that contains all the todo items
-get inbox() {
-    return this._personalProjectsList.reduce((inbox, project) => {
-        return inbox.concat(project.todoList);
-    }, []);
-} 
-
-// Today is a special project that contains all the todo items that are due today
-get today() {
-    const today = new Date().toLocaleDateString();
-    return this._personalProjectsList.reduce((todayList, project) => {
-        return todayList.concat(project.todoList.filter(item => item.dueDate === today));
-    }, []);
-}
-
-// Week is a special project that contains all the todo items that are due in the next 7 days
-get week() {
-    const today = new Date();
-    const week = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7).toLocaleDateString();
-    return this._personalProjectsList.reduce((weekList, project) => {
-        return weekList.concat(project.todoList.filter(item => item.dueDate <= week));
-    }, []);
-}
-*/

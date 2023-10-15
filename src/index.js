@@ -53,14 +53,13 @@ function setPersonalProject(project) {
 
 function setActiveProjectListener(projectButton) {
     projectButton.addEventListener('click', () => {
-        const isDefaultProject = myProjectsList.isDefaultProjectId(projectButton.id);
-
         myProjectsList.activeProject = myProjectsList.getProjectById(projectButton.id);
         projectsDOM.setActiveClassTo(projectButton);
-
+        
         const todosList = todoDOM.renderProjectTodos(myProjectsList.activeProject);
         todosList.forEach(todo => setTodoElementListeners(todo));
-
+        
+        const isDefaultProject = myProjectsList.isDefaultProjectId(projectButton.id);
         isDefaultProject ? todoDOM.hideAddTodoButton() : todoDOM.showAddTodoButton();
     });
 }

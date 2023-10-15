@@ -26,24 +26,6 @@ export function renderTodoDetailsDialog(todo) {
     todoDetailsDialog.showModal();
 }
 
-/* <dialog class="todo-form-dialog">
-        <form action="">
-            <label for="todo-title">Title</label>
-            <input type="text" id="todo-title" name="todo-title" required>
-            <label for="todo-description">Description</label>
-            <textarea id="todo-description" name="todo-description"></textarea>
-            <label for="todo-date">Due Date</label>
-            <input type="date" id="todo-date" name="todo-date" required>
-            <select id="todo-urgency" name="todo-urgency" required>
-                <option value="low" selected>Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-            <button type="submit">Add</button>
-            <button id="cancel-todo-form" type="button">Cancel</button>
-        </form>
-    </dialog> */
-
 export function renderNewTodoFormDialog() {
     const todoFormDialog = document.createElement('dialog');
     todoFormDialog.classList.add('todo-form-dialog');
