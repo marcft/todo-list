@@ -1,37 +1,46 @@
-import { URGENCY_TYPE, addButton } from './constants.js';
+//Corregir bug de estilo quan nian molts todos
+//Afegir estil als dialogs
 
-import { ProjectsList, Project } from './modules/logic/project.js';
+import { format } from 'date-fns';
+
+import { addButton } from './constants.js';
+
+import { ProjectsList, Project, DefaultProject } from './modules/logic/project.js';
 import { TodoItem } from './modules/logic/todo.js';
 
 import * as projectsDOM from './modules/dom/project.js';
 import * as todoDOM from './modules/dom/todo.js';
+import * as dialogDOM from './modules/dom/dialog.js';
 
 const myProjectsList = new ProjectsList(
-        new Project('Inbox'), new Project('Today'), new Project('Week'), new Project('First Project'));
+        new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'),
+        new Project('First Project'));
 
-initializeState(myProjectsList);
+initializeState();
 
-function initializeState(projectList) {
+function initializeState() {
     //Display default projects
     const inboxProjectButton =
-        projectsDOM.displayDefaultProject(projectList.inboxProject, 'assets/inbox_icon.svg');
+        projectsDOM.displayDefaultProject(myProjectsList.inboxProject, 'assets/inbox_icon.svg');
     const dayProjectButton =
-        projectsDOM.displayDefaultProject(projectList.dayProject, 'assets/today_calendar_icon.svg');
+        projectsDOM.displayDefaultProject(myProjectsList.dayProject, 'assets/today_calendar_icon.svg');
     const weekProjectButton =
-        projectsDOM.displayDefaultProject(projectList.weekProject, 'assets/week_calendar_icon.svg');
+        projectsDOM.displayDefaultProject(myProjectsList.weekProject, 'assets/week_calendar_icon.svg');
 
     //Initialize active project
-    const initialActiveProject = document.getElementById(projectList.activeProject.id);
+    const initialActiveProject = document.getElementById(myProjectsList.activeProject.id);
     projectsDOM.setActiveClassTo(initialActiveProject);
     const todosList = todoDOM.renderProjectTodos(myProjectsList.activeProject);
     todosList.forEach(todo => setTodoElementListeners(todo));
+    myProjectsList.isDefaultProjectId(initialActiveProject.id)
+                ? todoDOM.hideAddTodoButton() : todoDOM.showAddTodoButton();
 
     //Set listeners to default projects, just the ActiveProjectListener
     const defaultProjects = [inboxProjectButton, dayProjectButton, weekProjectButton];
     defaultProjects.forEach( project => setActiveProjectListener(project) );
 
     //Display personal projects and set listeners
-    const personalProjects = projectList.personalProjectsList;
+    const personalProjects = myProjectsList.personalProjectsList;
     personalProjects.forEach( project => { setPersonalProject(project); } );
 }
 
@@ -44,10 +53,15 @@ function setPersonalProject(project) {
 
 function setActiveProjectListener(projectButton) {
     projectButton.addEventListener('click', () => {
+        const isDefaultProject = myProjectsList.isDefaultProjectId(projectButton.id);
+
         myProjectsList.activeProject = myProjectsList.getProjectById(projectButton.id);
         projectsDOM.setActiveClassTo(projectButton);
+
         const todosList = todoDOM.renderProjectTodos(myProjectsList.activeProject);
         todosList.forEach(todo => setTodoElementListeners(todo));
+
+        isDefaultProject ? todoDOM.hideAddTodoButton() : todoDOM.showAddTodoButton();
     });
 }
 
@@ -85,35 +99,79 @@ addButton.project.addEventListener('click', () => {
     });
 });
 
-let testCounter = 0;
 addButton.todo.addEventListener('click', () => {
-    const newTodo = new TodoItem(`New Todo${testCounter++}`, URGENCY_TYPE.LOW);
-    myProjectsList.activeProject.add(newTodo);
-    const todoElement = todoDOM.renderSingleTodo(newTodo);
-    setTodoElementListeners(todoElement);
+    const newTodoDialog = dialogDOM.renderNewTodoFormDialog();
+    setCloseDialogListener(newTodoDialog);
+    setCreateTodoDialogListener(newTodoDialog);
 });
 
+function setCloseDialogListener(dialog) {
+    dialog.addEventListener('click', (e) => {
+        if(e.target === dialog) dialog.remove();
+    });
+
+    const cancelButton = document.getElementById('cancel-todo-form');
+    cancelButton.addEventListener('click', () => {
+        dialog.remove();
+    });
+}
+
+function setCreateTodoDialogListener(dialog) {
+    const form = dialog.querySelector('form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const todoTitle = form.querySelector('input[name="todo-title"]').value;
+        const todoUrgency = form.querySelector('select[name="todo-urgency"]').value;
+        const todoDescription = form.querySelector('textarea[name="todo-description"]').value;
+        const todoDate = form.querySelector('input[name="todo-date"]').value;
+        const formattedDate = format(new Date(todoDate), 'do MMM');
+
+        const newTodo = new TodoItem(todoTitle, todoUrgency, todoDescription, formattedDate);
+        myProjectsList.activeProject.add(newTodo);
+        const todoElement = todoDOM.renderSingleTodo(newTodo);
+        setTodoElementListeners(todoElement);
+        dialog.remove();
+    });
+}
+
 function setTodoElementListeners(todoElement) {
+    const todoItem = myProjectsList.activeProject.getTodoById(todoElement.id);
+
     const todoCheckbox = todoElement.querySelector('.todo-checkbox');
-    todoCheckbox.addEventListener('change', () => {
-        const todoItem = myProjectsList.activeProject.getTodoById(todoElement.id);   
+    todoCheckbox.addEventListener('change', () => {;   
         todoItem.toggleIsDone();
         todoDOM.toggleTodoDone(todoElement);
     });
 
     const todoDetailsButton = todoElement.querySelector('.todo-details');
     todoDetailsButton.addEventListener('click', () => {
-        todoDOM.renderTodoDetails(myProjectsList.activeProject.getTodoById(todoElement.id));
+        dialogDOM.renderTodoDetailsDialog(todoItem);
     });
 
     const todoEditButton = todoElement.querySelector('.todo-edit');
     todoEditButton.addEventListener('click', () => {
-        console.log('Edit button pressed');
+        const editDialog = dialogDOM.renderTodoEditDialog(todoItem);
+        setCloseDialogListener(editDialog);
+
+        const form = editDialog.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const todoTitle = form.querySelector('input[name="todo-title"]').value;
+            const todoUrgency = form.querySelector('select[name="todo-urgency"]').value;
+            const todoDescription = form.querySelector('textarea[name="todo-description"]').value;
+            const todoDate = form.querySelector('input[name="todo-date"]').value;
+            const formattedDate = format(new Date(todoDate), 'do MMM');
+
+            todoItem.setNewValues(todoTitle, todoUrgency, todoDescription, formattedDate);
+            todoDOM.updateTodoValues(todoElement, todoItem);
+            editDialog.remove();
+        });
+       
     });
 
     const todoDeleteButton = todoElement.querySelector('.todo-delete');
     todoDeleteButton.addEventListener('click', () => {
-        myProjectsList.activeProject.removeTodoById(todoElement.id);
+        myProjectsList.activeProject.removeTodoById(todoElement.id, myProjectsList.personalProjectsList);
         todoElement.remove();
     });
 }

@@ -1,14 +1,17 @@
+import { format } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
+
 export class TodoItem {
     static index = 0;
 
-    constructor(name, urgency, isDone = false, details = "",
-    dueDate = new Date().toLocaleDateString()) {
+    constructor(name, urgency, description = "",
+    dueDate = format(new Date(), 'do MMM'), isDone = false) {
         this._name = name;
         this._urgency = urgency;
-        this._isDone = isDone;
-        this._details = details;
+        this._description = description;
         this._dueDate = dueDate;
-        this._id = `todo${TodoItem.index++}`;
+        this._isDone = isDone;
+        this._id = `todo${uuidv4()}`;
     }
 
     get name() {
@@ -19,16 +22,16 @@ export class TodoItem {
         return this._urgency;
     }
 
-    get isDone() {
-        return this._isDone;
-    }
-
-    get details() {
-        return this._details;
+    get description() {
+        return this._description;
     }
 
     get dueDate() { 
         return this._dueDate;
+    }
+
+    get isDone() {
+        return this._isDone;
     }
 
     get id() {
@@ -37,5 +40,12 @@ export class TodoItem {
 
     toggleIsDone() {
         this._isDone = !this._isDone;
+    }
+
+    setNewValues(name, urgency, description, dueDate) {
+        this._name = name;
+        this._urgency = urgency;
+        this._description = description;
+        this._dueDate = dueDate;
     }
 }

@@ -21,6 +21,7 @@ export function renderSingleTodo(todo) {
     const todoCheckbox = document.createElement('input');
     todoCheckbox.classList.add('todo-checkbox');
     todoCheckbox.setAttribute('type', 'checkbox');
+    todoCheckbox.setAttribute('name', 'todo-checkbox');
     todoCheckbox.checked = todo.isDone;
 
     const todoTitle = document.createElement('h3');
@@ -55,19 +56,30 @@ export function renderSingleTodo(todo) {
     return todoContainer;
 }
 
-export function renderTodoDetails(todo) {
-    const todoDetails = document.createElement('div');
-    todoDetails.classList.add('todo-details-container');
-    todoDetails.innerHTML =
-        `<h3 class="todo-details-title">${todo.name}</h3>
-        <p class="todo-details-urgency">Urgency: ${todo.urgency}</p>
-        <p class="todo-details-date">Due date: ${todo.dueDate}</p>
-        <p class="todo-details-description">${todo.details}</p>`;
-    //Esto no
-    main.insertBefore(todoDetails, addButton.todo);
+export function updateTodoValues(todoElement, todo) {
+    const todoTitle = todoElement.querySelector('.todo-title');
+    todoTitle.textContent = todo.name;
+
+    const todoDate = todoElement.querySelector('.todo-date');
+    todoDate.textContent = todo.dueDate;
+
+    todoElement.classList.remove('todo-urgency-low', 'todo-urgency-medium', 'todo-urgency-high');
+    todoElement.classList.add(`todo-urgency-${todo.urgency}`);
+}
+
+export function deleleteTodoElement(todoElement) {
+    todoElement.remove();
 }
 
 export function toggleTodoDone(todoItem) {
     const todoElement = document.getElementById(todoItem.id);
     todoElement.classList.toggle('todo-done');
+}
+
+export function hideAddTodoButton() {
+    addButton.todo.classList.add('hidden');
+}
+
+export function showAddTodoButton() {
+    addButton.todo.classList.remove('hidden');
 }
