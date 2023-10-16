@@ -97,10 +97,15 @@ function setDeleteProjectListener(projectButton) {
 
 /// -------------- DIALOGS --------------
 
-//Every dialog must close when clicking outside
+//Every dialog must close when clicking outside or the cancel button
 function setCloseDialogListener(dialog) {
     dialog.addEventListener('click', (e) => {
         if(e.target === dialog) dialog.remove();
+    });
+
+    const cancelButton = document.getElementById('cancel-todo-form');
+    cancelButton.addEventListener('click', () => {
+        dialog.remove();
     });
 }
 
@@ -122,10 +127,7 @@ function setCreateTodoDialogListeners(dialog) {
         dialog.remove();
     });
 
-    const cancelButton = document.getElementById('cancel-todo-form');
-    cancelButton.addEventListener('click', () => {
-        dialog.remove();
-    });
+    
 }
 
 /// -------------- TODOS --------------
