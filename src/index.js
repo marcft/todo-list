@@ -9,6 +9,8 @@ import * as projectsDOM from './modules/dom/project.js';
 import * as todoDOM from './modules/dom/todo.js';
 import * as dialogDOM from './modules/dom/dialog.js';
 
+/// -------------- INITIALIZATION --------------
+
 const myProjectsList = new ProjectsList(
         new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'));
 
@@ -55,6 +57,8 @@ function initializeState() {
     personalProjects.forEach( project => { setPersonalProject(project); } );
 }
 
+/// -------------- PROJECTS --------------
+
 //Default projects are setted in the initializeState function, and they have a different functionality
 function setPersonalProject(project) {
     const projectButton = projectsDOM.displayPersonalProject(project);
@@ -62,6 +66,7 @@ function setPersonalProject(project) {
     setDeleteProjectListener(projectButton);
 }
 
+//Sets the project to active and renders his todos
 function setActiveProjectListener(projectButton) {
     projectButton.addEventListener('click', () => {
         myProjectsList.activeProject = myProjectsList.getProjectById(projectButton.id);
@@ -75,6 +80,7 @@ function setActiveProjectListener(projectButton) {
     });
 }
 
+//Delete the project and his todos
 function setDeleteProjectListener(projectButton) {
     const deleteIcon = projectButton.querySelector('.delete-project');
     deleteIcon.addEventListener('click', (e) => {
@@ -89,44 +95,17 @@ function setDeleteProjectListener(projectButton) {
     });
 }
 
-addButton.project.addEventListener('click', () => {
-    projectsDOM.hideAddProjectButton();
-    const form = projectsDOM.displayProjectForm();
+/// -------------- DIALOGS --------------
 
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const projectName = form.querySelector('input').value;
-        const newProject = new Project(projectName);
-        myProjectsList.addPersonalProject(newProject);
-        setPersonalProject(newProject);
-        form.remove();
-        projectsDOM.showAddProjectButton();
-    });
-
-    form.addEventListener('reset', () => {
-        form.remove();
-        projectsDOM.showAddProjectButton();
-    });
-});
-
-addButton.todo.addEventListener('click', () => {
-    const newTodoDialog = dialogDOM.renderNewTodoFormDialog();
-    setCloseDialogListener(newTodoDialog);
-    setCreateTodoDialogListener(newTodoDialog);
-});
-
+//Every dialog must close when clicking outside
 function setCloseDialogListener(dialog) {
     dialog.addEventListener('click', (e) => {
         if(e.target === dialog) dialog.remove();
     });
-
-    const cancelButton = document.getElementById('cancel-todo-form');
-    cancelButton.addEventListener('click', () => {
-        dialog.remove();
-    });
 }
 
-function setCreateTodoDialogListener(dialog) {
+//Sets the specific listeners for the CreateTodo dialog
+function setCreateTodoDialogListeners(dialog) {
     const form = dialog.querySelector('form');
     form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -142,8 +121,16 @@ function setCreateTodoDialogListener(dialog) {
         setTodoElementListeners(todoElement);
         dialog.remove();
     });
+
+    const cancelButton = document.getElementById('cancel-todo-form');
+    cancelButton.addEventListener('click', () => {
+        dialog.remove();
+    });
 }
 
+/// -------------- TODOS --------------
+
+//Every todoElement has this listeners
 function setTodoElementListeners(todoElement) {
     const todoItem = myProjectsList.activeProject.getTodoById(todoElement.id);
 
@@ -185,3 +172,33 @@ function setTodoElementListeners(todoElement) {
         todoElement.remove();
     });
 }
+
+/// -------------- ADDBUTTON LISTENERS --------------
+
+//Add project listener
+addButton.project.addEventListener('click', () => {
+    projectsDOM.hideAddProjectButton();
+    const form = projectsDOM.displayProjectForm();
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const projectName = form.querySelector('input').value;
+        const newProject = new Project(projectName);
+        myProjectsList.addPersonalProject(newProject);
+        setPersonalProject(newProject);
+        form.remove();
+        projectsDOM.showAddProjectButton();
+    });
+
+    form.addEventListener('reset', () => {
+        form.remove();
+        projectsDOM.showAddProjectButton();
+    });
+});
+
+//Add todo listener
+addButton.todo.addEventListener('click', () => {
+    const newTodoDialog = dialogDOM.renderNewTodoFormDialog();
+    setCloseDialogListener(newTodoDialog);
+    setCreateTodoDialogListeners(newTodoDialog);
+});
