@@ -1,4 +1,5 @@
 import { parse, format } from 'date-fns';
+import './dialog_style.css';
 
 const main = document.querySelector('main');
 
@@ -33,19 +34,31 @@ export function renderNewTodoFormDialog() {
     const form = document.createElement('form');
 
     form.innerHTML = 
-        `<label for="todo-title">Title</label>
-        <input type="text" id="todo-title" name="todo-title" required>
-        <label for="todo-description">Description</label>
-        <textarea id="todo-description" name="todo-description"></textarea>
-        <label for="todo-date">Due Date</label>
-        <input type="date" id="todo-date" name="todo-date" required>
-        <select id="todo-urgency" name="todo-urgency" required>
-            <option value="low" selected>Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <button type="submit">Add</button>
-        <button id="cancel-todo-form" type="button">Cancel</button>`;
+        `<h2>Add Todo</h2>
+        <p>
+            <label for="todo-title">Title</label>
+            <input type="text" id="todo-title" name="todo-title" maxlength="30" required>
+        </p>
+        <p>
+            <label for="todo-date">Due Date</label>
+            <input type="date" id="todo-date" name="todo-date" required>
+        </p>
+        <p>
+            <label for="todo-urgency">Urgency</label>
+            <select id="todo-urgency" name="todo-urgency" required>
+                <option value="low" selected>Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+        </p>
+        <p>
+            <label for="todo-description">Description</label>
+            <textarea id="todo-description" name="todo-description" maxlength="200" rows="4"></textarea>
+        </p>
+        <p>
+            <button type="submit">Add</button>
+            <button id="cancel-todo-form" type="button">Cancel</button>
+        </p>`;
 
     todoFormDialog.appendChild(form);
 

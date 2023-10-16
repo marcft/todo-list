@@ -1,0 +1,110 @@
+/* DIALOG */
+
+dialog {
+    --BLUE-PURPLE: rgb(124, 124, 255);
+
+    position: fixed;
+
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px 10px rgba(0, 0, 0, 0.3);
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* -- TODO-FORM-DIALOG */
+
+.todo-form-dialog {
+    --TODO-FORM-DIALOG-WIDTH: 400px;
+    
+    top: 150px;
+    left: calc(50% - var(--TODO-FORM-DIALOG-WIDTH) / 2);
+}
+
+.todo-form-dialog > form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    width: var(--TODO-FORM-DIALOG-WIDTH);
+    padding: 20px;
+    background-color: #fff;
+}
+
+.todo-form-dialog > form > h2 {
+    font-size: 1.7rem;
+    border-bottom: 5px solid var(--BLUE-PURPLE);
+    padding-bottom: 10px;
+}
+
+.todo-form-dialog > form > p:not(:last-child) {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.todo-form-dialog > form label {
+    font-size: 1.1rem;
+}
+
+.todo-form-dialog > form input,
+.todo-form-dialog > form select,
+.todo-form-dialog > form textarea {
+    padding: 5px 10px;
+    border: 1px solid rgb(105, 105, 105);
+    color: rgb(66, 66, 66);
+    border-radius: 5px;
+    outline: none;
+}
+
+.todo-form-dialog > form > p:last-child {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 15px;
+}
+
+.todo-form-dialog button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--BLUE-PURPLE);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.todo-form-dialog button:hover {
+    background-color: rgb(91, 91, 255);
+}
+
+/* -- DETAILS-DIALOG */
+
+.details-dialog {
+    --DETAILS-DIALOG-WIDTH: 400px;
+    
+    top: 200px;
+    left: calc(50% - var(--DETAILS-DIALOG-WIDTH) / 2);
+}
+
+.details-dialog > div {
+    width: var(--DETAILS-DIALOG-WIDTH);
+    padding: 30px;
+    background-color: #fff;
+}
+
+.details-dialog h3 {
+    font-size: 1.7rem;
+    padding-bottom: 10px;
+    border-bottom: 5px solid var(--BLUE-PURPLE);
+}
+
+.details-dialog p {
+    font-size: 1.1rem;
+}
+
+.details-dialog :not(:last-child) {
+    margin-bottom: 15px;
+}

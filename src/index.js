@@ -1,9 +1,6 @@
-//Corregir bug de estilo quan nian molts todos
-//Afegir estil als dialogs
+import { addDays, format } from 'date-fns';
 
-import { format } from 'date-fns';
-
-import { addButton } from './constants.js';
+import { addButton, URGENCY_TYPE } from './constants.js';
 
 import { ProjectsList, Project, DefaultProject } from './modules/logic/project.js';
 import { TodoItem } from './modules/logic/todo.js';
@@ -13,9 +10,23 @@ import * as todoDOM from './modules/dom/todo.js';
 import * as dialogDOM from './modules/dom/dialog.js';
 
 const myProjectsList = new ProjectsList(
-        new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'),
-        new Project('First Project'));
+        new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'));
 
+const today = format(new Date(), 'do MMM');
+const initialProject = new Project('Init Project',
+        new TodoItem('Feed myself', URGENCY_TYPE.HIGH, 'I must eat to gain energy', today, true),
+        new TodoItem('Workout', URGENCY_TYPE.MEDIUM , 'I must gain strength to restore the Roman Empire', today),
+        new TodoItem('Clean the house', URGENCY_TYPE.LOW, 'The house is too dirty', addDaysToToday(1), true),
+        new TodoItem('Restablish the Roman Empire', URGENCY_TYPE.MEDIUM, 'Veni, Vidi, Vici', addDaysToToday(2)),
+        new TodoItem('Crown me Caesar', URGENCY_TYPE.HIGH, 'Following the path of Augustus', addDaysToToday(3)),
+        new TodoItem('Learn how to code', URGENCY_TYPE.MEDIUM, 'It\'s funny', addDaysToToday(11), true),
+        new TodoItem('Take a nap', URGENCY_TYPE.LOW, 'I\'m tired', addDaysToToday(17)));
+
+function addDaysToToday(days) {
+    return format(addDays(new Date(), days), 'do MMM');
+}
+
+myProjectsList.addPersonalProject(initialProject);
 initializeState();
 
 function initializeState() {

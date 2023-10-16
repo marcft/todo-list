@@ -16,7 +16,7 @@ export function showAddProjectButton() {
 export function displayProjectForm() {
     const form = document.createElement('form');
     form.innerHTML = 
-        `<input type="text" name="project-name" placeholder="Project Name" required>
+        `<input type="text" name="project-name" placeholder="Project Name" maxlength="10" required>
         <button type="submit">Confirm</button>
         <button type="reset">Cancel</button>`;
 
