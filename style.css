@@ -25,8 +25,12 @@ body {
     height: 100vh;
 }
 
-button, input {
+button, input, textarea, select {
     font: inherit;
+}
+
+textarea {
+    resize: none;
 }
 
 img {
@@ -112,7 +116,7 @@ main #add-todo-btn {
     align-items: center;
 
     width: 50px;
-    height: 50px;
+    min-height: 50px;
     background-color: var(--MAIN-COLOR);
     border: none;
     border-radius: 50%;
@@ -146,44 +150,4 @@ footer {
     border-top: var(--MAIN-BORDER);
     text-align: center;
     font-size: 1.1rem;
-}
-
-/* DIALOG */
-
-dialog {
-    position: fixed;
-    border-radius: 10px;
-}
-
-dialog::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* -- TODO-FORM-DIALOG */
-
-.todo-form-dialog {
-    --TODO-FORM-DIALOG-WIDTH: 600px;
-    
-    top: 150px;
-    left: calc(50% - var(--TODO-FORM-DIALOG-WIDTH) / 2);
-}
-
-.todo-form-dialog > form {
-    width: var(--TODO-FORM-DIALOG-WIDTH);
-    padding: 20px;
-    background-color: #fff;
-}
-
-/* -- DETAILS-DIALOG */
-
-.details-dialog > div {
-    --DETAILS-DIALOG-WIDTH: 400px;
-    
-    position: fixed;
-    top: 200px;
-    left: calc(50% - var(--DETAILS-DIALOG-WIDTH) / 2);
-
-    width: var(--DETAILS-DIALOG-WIDTH);
-    padding: 20px;
-    background-color: #fff;
 }
