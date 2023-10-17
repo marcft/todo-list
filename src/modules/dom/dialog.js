@@ -34,7 +34,7 @@ export function renderNewTodoFormDialog() {
     const form = document.createElement('form');
 
     form.innerHTML = 
-        `<h2>Add Todo</h2>
+        `<h2>Todo Form</h2>
         <p>
             <label for="todo-title">Title</label>
             <input type="text" id="todo-title" name="todo-title" maxlength="30" required>
@@ -56,7 +56,7 @@ export function renderNewTodoFormDialog() {
             <textarea id="todo-description" name="todo-description" maxlength="200" rows="4"></textarea>
         </p>
         <p>
-            <button type="submit">Add</button>
+            <button type="submit">Confirm</button>
             <button id="cancel-todo-form" type="button">Cancel</button>
         </p>`;
 

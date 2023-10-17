@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { format, parse, addDays, startOfWeek } from 'date-fns';
+import { TodoItem } from './todo.js';
 
 export class Project {
     constructor(name, ...initialTodos) {
@@ -153,5 +154,18 @@ export class ProjectsList {
         }
         const index = this._personalProjectsList.findIndex(project => project.id === id);
         this._personalProjectsList.splice(index, 1);
+    }
+
+    static fromJSON(json) {
+        const inboxProject = new DefaultProject('Inbox');
+        const dayProject = new DefaultProject('Today');
+        const weekProject = new DefaultProject('This week');
+        const personalProjectsList = json._personalProjectsList.map(project => {
+            const todoList = project._todoList.map(todo => {
+                return new TodoItem(todo._name, todo._urgency, todo._description, todo._dueDate, todo._isDone);
+            });
+            return new Project(project._name, ...todoList);
+        });
+        return new ProjectsList(inboxProject, dayProject, weekProject, ...personalProjectsList);
     }
 }

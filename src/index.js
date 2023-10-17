@@ -2,6 +2,7 @@ import { addDays, format } from 'date-fns';
 
 import { addButton, URGENCY_TYPE } from './constants.js';
 
+import { getProjectsListFromStorage, saveProjectsListToStorage, storageAvailable } from './modules/logic/storage.js';
 import { ProjectsList, Project, DefaultProject } from './modules/logic/project.js';
 import { TodoItem } from './modules/logic/todo.js';
 
@@ -11,11 +12,26 @@ import * as dialogDOM from './modules/dom/dialog.js';
 
 /// -------------- INITIALIZATION --------------
 
-const myProjectsList = new ProjectsList(
-        new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'));
+let myProjectsList;
 
-const today = format(new Date(), 'do MMM');
-const initialProject = new Project('Init Project',
+if(storageAvailable('localStorage')) {
+    if(localStorage.getItem('myProjectsList')) {
+        const parsedProjectsList = getProjectsListFromStorage();
+        myProjectsList = ProjectsList.fromJSON(parsedProjectsList);
+    }
+    else { myProjectsList = defaultMyProjectsList(); }
+}
+else { myProjectsList = defaultMyProjectsList(); }
+initializeState();
+
+function defaultMyProjectsList() {
+    const addDaysToToday = (days) => format(addDays(new Date(), days), 'do MMM');
+
+    const defaultList = new ProjectsList(
+        new DefaultProject('Inbox'), new DefaultProject('Today'), new DefaultProject('Week'));
+    
+    const today = format(new Date(), 'do MMM');
+    const initialProject = new Project('Init Project',
         new TodoItem('Feed myself', URGENCY_TYPE.HIGH, 'I must eat to gain energy', today, true),
         new TodoItem('Workout', URGENCY_TYPE.MEDIUM , 'I must gain strength to restore the Roman Empire', today),
         new TodoItem('Clean the house', URGENCY_TYPE.LOW, 'The house is too dirty', addDaysToToday(1), true),
@@ -24,12 +40,9 @@ const initialProject = new Project('Init Project',
         new TodoItem('Learn how to code', URGENCY_TYPE.MEDIUM, 'It\'s funny', addDaysToToday(11), true),
         new TodoItem('Take a nap', URGENCY_TYPE.LOW, 'I\'m tired', addDaysToToday(17)));
 
-function addDaysToToday(days) {
-    return format(addDays(new Date(), days), 'do MMM');
+    defaultList.addPersonalProject(initialProject);
+    return defaultList;
 }
-
-myProjectsList.addPersonalProject(initialProject);
-initializeState();
 
 function initializeState() {
     //Display default projects
@@ -92,6 +105,7 @@ function setDeleteProjectListener(projectButton) {
             projectsDOM.setActiveClassTo(document.getElementById(myProjectsList.activeProject.id));
             todoDOM.renderProjectTodos(myProjectsList.activeProject);
         }
+        saveProjectsListToStorage(myProjectsList);
     });
 }
 
@@ -109,7 +123,7 @@ function setCloseDialogListener(dialog) {
     });
 }
 
-//Sets the specific listeners for the CreateTodo dialog
+//Sets the specific listener for the CreateTodo dialog
 function setCreateTodoDialogListeners(dialog) {
     const form = dialog.querySelector('form');
     form.addEventListener('submit', (e) => {
@@ -124,10 +138,9 @@ function setCreateTodoDialogListeners(dialog) {
         myProjectsList.activeProject.add(newTodo);
         const todoElement = todoDOM.renderSingleTodo(newTodo);
         setTodoElementListeners(todoElement);
+        saveProjectsListToStorage(myProjectsList);
         dialog.remove();
     });
-
-    
 }
 
 /// -------------- TODOS --------------
@@ -140,6 +153,7 @@ function setTodoElementListeners(todoElement) {
     todoCheckbox.addEventListener('change', () => {;   
         todoItem.toggleIsDone();
         todoDOM.toggleTodoDone(todoElement);
+        saveProjectsListToStorage(myProjectsList);
     });
 
     const todoDetailsButton = todoElement.querySelector('.todo-details');
@@ -163,6 +177,7 @@ function setTodoElementListeners(todoElement) {
 
             todoItem.setNewValues(todoTitle, todoUrgency, todoDescription, formattedDate);
             todoDOM.updateTodoValues(todoElement, todoItem);
+            saveProjectsListToStorage(myProjectsList);
             editDialog.remove();
         });
        
@@ -171,6 +186,7 @@ function setTodoElementListeners(todoElement) {
     const todoDeleteButton = todoElement.querySelector('.todo-delete');
     todoDeleteButton.addEventListener('click', () => {
         myProjectsList.activeProject.removeTodoById(todoElement.id, myProjectsList.personalProjectsList);
+        saveProjectsListToStorage(myProjectsList);
         todoElement.remove();
     });
 }
@@ -188,8 +204,9 @@ addButton.project.addEventListener('click', () => {
         const newProject = new Project(projectName);
         myProjectsList.addPersonalProject(newProject);
         setPersonalProject(newProject);
-        form.remove();
         projectsDOM.showAddProjectButton();
+        saveProjectsListToStorage(myProjectsList);
+        form.remove();
     });
 
     form.addEventListener('reset', () => {
